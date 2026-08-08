@@ -5,7 +5,7 @@
       "payloadId": "a37-A376BXXS4AZG4",
       "displayName": "Galaxy A37 | Kernel 6.1.138",
       "models": ["SM-A376B"],
-      "kernelVersions": ["6.1.138-android14-11"],
+      "kernelVersions": ["6.1.138"],
       "exploit": {
         "url": "https://raw.githubusercontent.com/abdgalaxy36-code/Root-My-Galaxy-Payloads-A37-Clean/main/a37-payload/build/a37-A376BXXS4AZG4/cve-2026-43499-app.so",
         "size": 125704
