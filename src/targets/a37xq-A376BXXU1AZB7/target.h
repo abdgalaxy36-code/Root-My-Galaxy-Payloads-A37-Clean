@@ -237,3 +237,17 @@
 
 
 #endif
+
+/* Additional required macros */
+#define PAGE_SHIFT 12
+#define KMALLOC_BUCKETS 32
+#define KMALLOC_PIPE_INDEX 0
+#define KMALLOC_CGROUP_PIPE_SLOT KMALLOC_CACHE_SLOT(KMALLOC_CGROUP_TYPE, KMALLOC_PIPE_INDEX)
+#define KMALLOC_CACHE_SLOT(type, index) (KMALLOC_CACHES + ((type) * KMALLOC_BUCKETS + (index)) * 8)
+#define DIRECT_MAP_PAGES ((DIRECT_MAP_END - DIRECT_MAP_BASE) >> PAGE_SHIFT)
+#define P0_DATA_ALIAS_CONST(x) x
+#define slide_canon_addr(x) (x)
+#define text_addr(x) (x)
+#define data_addr(x) (x)
+#define canon_addr(x) (x)
+#endif
